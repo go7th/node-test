@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+     <!-- Compiled and minified CSS -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+     <!-- Compiled and minified JavaScript -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+     <script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.js"></script>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <!-- <link rel="stylesheet" href="/public/links.ico" rel="icon" type="image/x-icon"> -->
+    <link rel="icon"href="/images/links.ico" />
+    <style>
+      html{font-size:62.5%}
+      #links .card-content .card-title{ font-size:3.6rem;}
+      #links .card-content p{ font-size: 2.2rem;}
+      #links .card-action{ font-size: 1.8rem;}
+    </style>
+  </head>
+  <body>
+      <div class="container" id="links">
+          <!-- Page Content goes here -->
+          <div class="row">
+            <a :href="link.link" v-for="link in links">
+                <div class="col l3 s6 m12" >
+                    <div class="card orange darken-4">
+                      <div class="card-content white-text">
+                        <span class="card-title" v-text="link.title"></span>
+                        <p v-text="link.describe"></p>
+                      </div>
+                      <div class="card-action">
+                        <span v-text="link.link" style="color:#ffab40">This is a link</span>
+                      </div>
+                    </div>
+                  </div>
+            </a>
+
+            
+            <div class="col l3 s6 m12" >
+                <div class="card  blue darken-4">
+                  <div class="card-content white-text">
+                      <span class="card-title">++</span>
+                      <p>++++</p>
+                  </div>
+                  <div class="card-action">
+                      <a href="#">等待添加</a>
+                  </div>
+              </div>
+          </div>
+
+
+      </div>
+      <script>
+        var links = new Vue({
+          el:"#links",
+          data:{
+            links:[],
+          }
+        })
+        $.ajax({
+          url:"/links/",
+          type:"post",
+          data:{},
+          success:function(ret){
+            console.log(ret)
+            links.$data.links=ret.data;
+          }
+        })
+      </script>
+  </body>
+</html>
