@@ -85,7 +85,13 @@ function data_merge(menu_data, product_data){
   const products = [];
   _.each(_.get(menu_data, 'data.products'), (product)=>{
     const meau_p_id = String(_.get(product, 'id'));
-    let new_product = {};
+    let new_product = {
+      id: meau_p_id,
+      name: _.get(product, 'name'),
+      code: _.get(product, 'code'),
+      qty: _.get(product, 'qty'),
+      image: "http://default_image"
+    };
     _.each(product_data, (p_data)=>{
       const p_data_id = String(_.get(p_data, 'data.id'));
       const p_data_image_url = _.get(p_data, 'data.image');
@@ -97,9 +103,9 @@ function data_merge(menu_data, product_data){
           qty: _.get(product, 'qty'),
           image: p_data_image_url
         };
-        products.push(new_product);
       }
     })
+    products.push(new_product);
   })
   return products;
 }
