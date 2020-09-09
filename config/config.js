@@ -1,8 +1,7 @@
 module.exports = {
-    mysql:{
+    redis:{
         host:'localhost',
-        user:'root',
-        password:'w8310559',
-        database:'group_personnel'
+        password: '',
+        // 'maxConnections': 10
     }
 }
