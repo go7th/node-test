@@ -4,8 +4,21 @@ const _ = require('lodash');
 const querystring = require('querystring');
 const md5 = require('md5-node');
 const request = require('requestretry');
-
+const bunyan = require('bunyan');
+const path = require('path');
 const redisc = require('../dal/redisc')
+
+
+const logger = bunyan.createLogger({
+  name: 'node-test',
+  streams: [
+    {
+      level: 'debug',
+      path: path.resolve(__dirname, '../access.log')  // log ERROR and above to a file
+    }
+  ]
+});
+
 
 function v_sign(qs, body, sign) {
   if (sign === 'skip' ) {
@@ -17,17 +30,44 @@ function v_sign(qs, body, sign) {
 }
 
 async function wget(url, id){
-  // logger.info({oms_path: path, qs: queryString, header: opt.headers},
-  //   `[GET] --> ${omsBaseUrl}${path}`);
-
+  logger.info({url: url+id},`[GET] --> ${url+id}`)
   const response = await request({
     url: url + id,
     json: true,
     maxAttempts: 5,   // (default) try 5 times
     retryDelay: 5000,  // (default) wait for 5s before trying again
+    time: true,
   })
-  // console.log(response.body);
-  return response.body;
+
+  const response_body = response.body;
+  if (response_body && response_body.code === 100) {
+      logger.info({
+        response: response_body,
+        timing: {
+            elapsedTime: response.elapsedTime,
+            responseStartTime: response.responseStartTime,
+            timingStart: response.timingStart,
+            timings: response.timings,
+            timingPhases: response.timingPhases,
+        },
+        remoteAddress: response.connection ? response.connection.remoteAddress : '',
+      },
+      `[GET] <-- ${url+id}`);
+  } else {
+      logger.error({
+        error_code: response_body ? response_body.code : 'unknown',
+        response: response_body,
+        timing: {
+            elapsedTime: response.elapsedTime,
+            responseStartTime: response.responseStartTime,
+            timingStart: response.timingStart,
+            timings: response.timings,
+            timingPhases: response.timingPhases,
+        },
+        remoteAddress: response.connection ? response.connection.remoteAddress : '',
+      }, `[GET] <-- ${url+id}`);
+  }
+  return response_body;
 };
 
 async function wget_redis(url, id){
