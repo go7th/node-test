@@ -26,6 +26,7 @@ function v_sign(qs, body, sign) {
   }
   delete qs.sign;
   const init_sign = md5(querystring.stringify(qs)+JSON.stringify(body));
+  console.log(init_sign);
   return init_sign === sign;
 }
 
@@ -116,7 +117,7 @@ router.get('/', async function(req, res, next) {
 });
 
 router.post('/menu/detail', async function(req, res, next) {
-  const verify_res = v_sign(req.query,req.body, _.get(req,'query.sign'));
+  const verify_res = v_sign(req.query, await req.rawBody, _.get(req,'query.sign'));
   if (!verify_res) {
     return res.send({
       code: 401,

@@ -15,8 +15,21 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
+
+app.use((req, res, next) => {
+  req.rawBody = new Promise(resolve => {
+    buf = '';
+    req.on('data', x => buf += x);
+    req.on('end', () => {
+      resolve(buf);
+    });
+  });
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
