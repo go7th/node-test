@@ -25,8 +25,7 @@ function v_sign(qs, body, sign) {
     return true;
   }
   delete qs.sign;
-  const init_sign = md5(querystring.stringify(qs)+JSON.stringify(body));
-  console.log(init_sign);
+  const init_sign = md5(querystring.stringify(qs)+body);
   return init_sign === sign;
 }
 
