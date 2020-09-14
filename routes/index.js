@@ -136,13 +136,15 @@ router.post('/menu/detail', async function(req, res, next) {
       });
   }
   const store_id = _.get(req, 'body.store_id');
-  const menu_url = 'https://5f560fae32f56200168bcde2.mockapi.io/api/v1/hello/menu/';
+  // const menu_url = 'https://5f560fae32f56200168bcde2.mockapi.io/api/v1/hello/menu/';
+  const menu_url = 'http://192.168.210.46:3000/api/v1/hello/menu/';
   const menu_data = await wget(menu_url, String(store_id));
 
   const product_urls = [];
   _.each(_.get(menu_data, 'data.products'), (product)=>{
     if (_.get(product, 'id')) {
-      const url = 'https://5f560fae32f56200168bcde2.mockapi.io/api/v1/hello/product_image/';
+      // const url = 'https://5f560fae32f56200168bcde2.mockapi.io/api/v1/hello/product_image/';
+      const url = 'http://192.168.210.46:3000/api/v1/hello/product_image/';
       product_urls.push(wget_redis(url, String(_.get(product, 'id')))); 
     }
   })
